@@ -34,3 +34,10 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+android
+ios
+
+.env
+
+pnpm-lock.yaml
+package-lock.json
