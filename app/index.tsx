@@ -1,4 +1,5 @@
 import * as Crypto from "expo-crypto";
+import { type ErrorBoundaryProps } from "expo-router";
 import Storage, {
   SQLiteStorageSetItemUpdateFunction,
 } from "expo-sqlite/kv-store";
@@ -15,7 +16,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
 const createStore = (key: string) => {
   return {
     get: async () => await Storage.getItem(key),
@@ -36,7 +36,7 @@ const USERID_ATOM = atomWithDefault(async (get) => {
   }
   return persist;
 });
-const WEBSOCKET_URL = process?.env?.EXPO_PUBLIC_WEBSOCKET ?? "";
+const WEBSOCKET_URL = "wss://bewildered-yoshi-whil.koyeb.app/";
 
 type PAYLOAD = {
   userId: string;
@@ -44,6 +44,14 @@ type PAYLOAD = {
   type: string;
 };
 
+export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  return (
+    <View style={{ flex: 1, backgroundColor: "red" }}>
+      <Text>{error.message}</Text>
+      <Text onPress={retry}>Try Again?</Text>
+    </View>
+  );
+}
 export default function App() {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<PAYLOAD[]>([]);
