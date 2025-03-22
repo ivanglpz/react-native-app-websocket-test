@@ -69,7 +69,11 @@ export default function App() {
     };
 
     websocket.onmessage = (event) => {
-      const data = JSON.parse(event?.data ?? "{}");
+      const data = JSON.parse(
+        event?.data?.startsWith("{") ? event?.data : "{}"
+      );
+
+      if (!Object.values(data).length) return;
 
       setMessages((prev) => [...prev, data]);
       scroll.current?.scrollToEnd({ animated: true });
@@ -93,7 +97,9 @@ export default function App() {
   const handleSubmit = () => {
     if (text?.trim() === "") return;
     setText("");
-    ws?.send(JSON.stringify({ userId, message: text, type: "MESSAGE" }));
+    const data = { userId, message: text, type: "MESSAGE" };
+    ws?.send(JSON.stringify(data));
+    setMessages((prev) => [...prev, data]);
   };
 
   useEffect(() => {
